@@ -6,6 +6,7 @@ import com.ada.springboot.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +41,9 @@ public class ClienteService {
 
     public void removerClientePorId(Long id){
         this.clienteRepository.deleteById(id);
+    }
+
+    public List<Cliente> listarTodosClientes(){
+        return this.clienteRepository.findAll();
     }
 }

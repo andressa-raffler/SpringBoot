@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class ClienteController {
@@ -65,5 +67,23 @@ public class ClienteController {
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Cliente não existe!");
     }
+
+    @GetMapping("/clientes")
+    public ResponseEntity<List<ClienteDTO>> listarTodosClientes(){
+        List<Cliente> clienteList = this.clienteService.listarTodosClientes();
+        if(clienteList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        List<ClienteDTO> clienteDTOS = clienteList.stream()
+                .map(cliente -> {
+                    ClienteDTO clienteDTO = new ClienteDTO();
+                    clienteDTO.setNome(cliente.getNome());
+                    clienteDTO.setCpf(cliente.getCpf());
+                    clienteDTO.setDataNascimento(cliente.getDataNascimento());
+                    return clienteDTO;
+                }).collect(Collectors.toList());
+        return ResponseEntity.ok(clienteDTOS);
+    }
+
 
 }
