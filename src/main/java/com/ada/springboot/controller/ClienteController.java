@@ -3,6 +3,7 @@ package com.ada.springboot.controller;
 import com.ada.springboot.controller.dto.ClienteDTO;
 import com.ada.springboot.controller.vo.ClienteVO;
 import com.ada.springboot.model.Cliente;
+import com.ada.springboot.model.Conta;
 import com.ada.springboot.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,11 +25,22 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping("/gravar-cliente")
-    public String criarCliente(@RequestBody ClienteVO clienteVO){
+    public String criarCliente(  @RequestBody ClienteVO clienteVO){
         Cliente cliente = new Cliente();
         cliente.setNome(clienteVO.getNome());
         cliente.setCpf(clienteVO.getCpf());
         cliente.setDataNascimento(clienteVO.getDataNascimento());
+        List<Conta> contas = new ArrayList<>();
+        if(!clienteVO.getContas().isEmpty()){
+            contas = clienteVO.getContas().stream().map(contaVO -> {
+                Conta conta = new Conta();
+                conta.setNumero(contaVO.getNumero());
+                conta.setDataCriacao(contaVO.getDataCriacao());
+                conta.setSaldo(contaVO.getSaldo());
+                return conta;
+            }).collect(Collectors.toList());
+        }
+        cliente.setContas(contas);
         clienteService.criarCliente(cliente);
         return "<h1> Cliente Criado </h1>";
         }
