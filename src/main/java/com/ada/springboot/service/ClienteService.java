@@ -20,7 +20,6 @@ public class ClienteService {
         return this.clienteRepository.save(cliente);
     }
 
-
     public Optional<Cliente> buscarClientePorId(Long id) {
         return this.clienteRepository.findById(id);
     }
